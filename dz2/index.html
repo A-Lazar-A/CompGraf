@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+	<title>DZ 2</title>
+</head>
+<body>
+	<div class="container d-flex justify-content-center">
+		<div class="row row">
+			<div class="col-12 d-flex justify-content-center py-1">
+				<canvas id="lesson01" width="500" height="400" style="border: 1px solid black;"></canvas>
+			</div>
+			<form class="needs-validation col-12 d-flex justify-content-center py-1" name='form'>	
+				<div class="px-1">
+					<button type="submit" class="btn btn-primary">Start</button>
+				</div>
+				<div >
+					<div class="input-group mb-3">
+					  
+					  <input type="number" class="form-control" value="5" min="1" max="350" required aria-label="Size of Square" aria-describedby="addon-wrapping" name="size">
+					  <span class="input-group-text " id="addon-wrapping">px</span>
+					  
+					</div>
+				</div>
+			</form>
+			<div class="col-12 d-flex justify-content-center ">
+				<button type="button" onclick="stop()" class="btn btn-primary">Stop</button>
+			</div>
+		</div>
+	</div>
+	<script type="text/javascript">
+		let canvas = document.getElementById("lesson01");
+		let context = canvas.getContext("2d");
+
+		var img = new Image();
+
+		var posx = 0;
+		var posy = 0;
+		var reversx = false;
+		var reversy = false;
+		var colorR = 255;
+		var colorG = 255;
+		var colorB = 255;
+		var size = 5;
+
+		function draw(size){
+
+			context.clearRect(0,0,500,400)
+			var data = context.getImageData(0,0, canvas.width, canvas.height);
+
+			for (var j=0; j<size; j++) {
+				for (var i=j; i<size; i++) {
+					data.data[500*4*(posy+j)+(posx+i)*4] = colorR;
+					data.data[500*4*(posy+j)+(posx+i)*4+1] = colorG;
+					data.data[500*4*(posy+j)+(posx+i)*4+2] = colorB;
+					data.data[500*4*(posy+j)+(posx+i)*4+3] = 255;
+				}
+			}
+			if (posx+size>=500){
+				reversx = true;
+			}
+			if (posx<=0){
+				reversx = false;
+			}
+			if (posy+size>=400){
+				reversy = true;
+			}
+			if (posy<=0){
+				reversy = false;
+			}
+
+			if (reversx){
+				posx--;
+			} else {
+				posx++;
+			}
+			if (reversy){
+				posy--;
+			} else {
+				posy++;
+			}
+			
+			context.putImageData(data, 0, 0);
+
+			context.beginPath();
+		
+		}
+
+		var stopID;
+
+		function stop(){
+			clearInterval(stopID);
+		}
+		
+
+		var form = document.forms['form'];
+		form.onsubmit = function(inp){
+			inp.preventDefault(); // форма перестает быть сабмитнутой
+			size = parseInt(document.form.size.value);
+
+			colorR = Math.floor(Math.random() * 255);
+			colorG = Math.floor(Math.random() * 255);
+			colorB = Math.floor(Math.random() * 255);
+
+			if (stopID){
+				clearInterval(stopID);
+			}
+			
+			stopID = setInterval(function(){draw(size)}, 5);
+			
+		}
+		
+	</script>
+</body>
+</html>
